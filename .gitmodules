@@ -1,0 +1,8 @@
+[submodule "external/json"]
+	path = external/json
+	url = https://github.com/nlohmann/json.git
+	branch = master
+[submodule "external/OdooRPC"]
+	path = external/OdooRPC
+	url = https://github.com/divad1196/OdooRPC.git
+	branch = master
