@@ -1,4 +1,4 @@
-# C++ OdooRPC
+# C++ OdooCpp
 
 **author**: Gallay David
 
@@ -79,6 +79,6 @@ git submodule update
    })"_json);
    ```
 
-   Here we use raw-string-literal from C++11 and user-defined-literals (""_json) from nlohmann's json library.
+   Here we use [raw-string-literal](https://www.geeksforgeeks.org/raw-string-literal-c/) from C++11 and [user-defined-literals](https://en.cppreference.com/w/cpp/language/user_literal) (""_json) from nlohmann's json library.
 
    model keeps a [std::shared_ptr](https://fr.cppreference.com/w/cpp/memory/shared_ptr) on OdooRPC object for convenience and safety.
