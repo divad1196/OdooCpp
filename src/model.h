@@ -10,7 +10,6 @@ typedef std::vector<size_t> Ids;
 #include "../external/OdooRPC/src/odoorpc.h"
 #include "json.h"
 
-using nlohmann::json;
 typedef std::shared_ptr<OdooRPC> SharedOdooRPC;
 namespace Odoo {
 
@@ -22,6 +21,8 @@ namespace Odoo {
             Model browse(const Ids& ids) const;
             Model create(const json& values) const;
             void write(const json& values) const;
+            void unlink() const;
+            Model exists() const;
             Model search(const char* domain, size_t offset=0, size_t limit=-1, const std::string& order="") const;
             Model search(const std::string& domain, size_t offset=0, size_t limit=-1, const std::string& order="") const;
             Model search(const json& domain, size_t offset=0, size_t limit=-1, const std::string& order="") const;
@@ -34,7 +35,7 @@ namespace Odoo {
                 const std::string& order=""
             ) const;
         private:
-            const SharedOdooRPC _rpc;
+            SharedOdooRPC _rpc;
             std::string _name;
             Ids _ids;
     };

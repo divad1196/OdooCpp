@@ -1,6 +1,7 @@
 #include "model.h"
 #include <sstream>
 #include <iostream>
+#include "exception.h"
 
 namespace Odoo {
 
@@ -37,19 +38,44 @@ namespace Odoo {
                 values.dump()
             }
         ));
+        checkError(response);
         return Model(_rpc, _name, {response["result"].get<size_t>()});
     }
 
 
     void Model::write(const json& values) const {
-        _rpc->raw_query(
+        json response = json::parse(_rpc->raw_query(
             _name,
             "write",
             {
                 json(_ids).dump(),
                 values.dump()
             }
-        );
+        ));
+        checkError(response);
+    }
+
+    void Model::unlink() const {
+        json response = json::parse(_rpc->raw_query(
+            _name,
+            "unlink",
+            {
+                json(_ids).dump(),
+            }
+        ));
+        checkError(response);
+    }
+
+    Model Model::exists() const {
+        json response = json::parse(_rpc->raw_query(
+            _name,
+            "exists",
+            {
+                json(_ids).dump(),
+            }
+        ));
+        checkError(response);
+        return Model(_rpc, _name, response["result"].get<Ids>());
     }
 
     Model Model::search(
@@ -77,6 +103,7 @@ namespace Odoo {
                 json(order).dump()
             }
         ));
+        checkError(response);
         return Model(_rpc, _name, response["result"].get<Ids>());
     }
 
@@ -107,6 +134,7 @@ namespace Odoo {
                 json(order).dump()
             }
         ));
+        checkError(response);
         return response["result"];
     }
 }

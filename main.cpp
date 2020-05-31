@@ -59,5 +59,12 @@ int main(int argc, char *argv[]) {
     );
     std::cout << read_partner_ids.dump(4) << std::endl;
 
+    new_partner_ids.unlink();
+    std::cout << new_partner_ids << std::endl;
+
+    new_partner_ids = new_partner_ids.exists();
+    std::cout << new_partner_ids << std::endl;
+
+
     return EXIT_SUCCESS;
 }

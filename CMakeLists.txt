@@ -17,6 +17,8 @@ add_subdirectory(external/OdooRPC)
 ADD_LIBRARY(odooclient
   src/client.h src/client.cpp
   src/model.h src/model.cpp
+  src/exception.h src/exception.cpp
+  src/json.h
 )
 target_link_libraries(odooclient odoorpc)
 
