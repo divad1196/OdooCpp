@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <string>
+#include <memory>
 #include <vector>
 typedef std::vector<size_t> Ids;
 
@@ -10,17 +11,17 @@ typedef std::vector<size_t> Ids;
 #include "json.h"
 
 using nlohmann::json;
-
+typedef std::shared_ptr<OdooRPC> SharedOdooRPC;
 namespace Odoo {
 
     class Model {
         public:
-            Model(const OdooRPC& rpc, const std::string& name, const Ids& ids = {});
+            Model(const SharedOdooRPC& rpc, const std::string& name, const Ids& ids = {});
             std::ostream& writeToStream(std::ostream& stream) const;
             Model browse(const Ids& ids) const;
             Model create(const json& values) const;
         private:
-            const OdooRPC _rpc;
+            const SharedOdooRPC _rpc;
             std::string _name;
             Ids _ids;
     };

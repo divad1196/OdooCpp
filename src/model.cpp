@@ -5,7 +5,7 @@
 namespace Odoo {
 
     Model::Model(
-        const OdooRPC& rpc,
+        const SharedOdooRPC& rpc,
         const std::string& name,
         const Ids& ids
     ): _rpc(rpc), _name(name), _ids(ids)
@@ -30,7 +30,7 @@ namespace Odoo {
     }
 
     Model Model::create(const json& values) const {
-        json response = json::parse(_rpc.raw_query(
+        json response = json::parse(_rpc->raw_query(
             _name,
             "create",
             {

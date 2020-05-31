@@ -3,6 +3,7 @@
 
 #include "../external/OdooRPC/src/odoorpc.h"
 #include "model.h"
+#include <memory>
 
 namespace Odoo {
 
@@ -18,7 +19,7 @@ namespace Odoo {
             Model env(const std::string& name) const;
 
         private:
-            const OdooRPC _rpc;
+            const SharedOdooRPC _rpc;
     };
 
 

@@ -7,7 +7,7 @@ namespace Odoo {
         const std::string& url,
         const std::string& database,
         const Credentials& credentials
-    ): _rpc(url, database, credentials)
+    ): _rpc(std::make_shared<OdooRPC>(url, database, credentials))
     {
 
     }
