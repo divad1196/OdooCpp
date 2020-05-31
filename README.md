@@ -115,6 +115,15 @@ git submodule update
        0, 10, "id desc"
    );
    std::cout << read_partner_ids.dump(4) << std::endl;
+   
+   // Delete records
+   new_partner_ids.unlink();
+   std::cout << new_partner_ids << std::endl;
+   
+   // Return records that exists in database
+   new_partner_ids = new_partner_ids.exists();
+   std::cout << new_partner_ids << std::endl;
+   
    ```
    
-   
+   Each of these methods checks if an error occured and **will throw an Exception** if the server return an error.
