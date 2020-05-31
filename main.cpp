@@ -37,9 +37,27 @@ int main(int argc, char *argv[]) {
         "name": "abc",
         "supplier": true
     })"_json);
-
-
     std::cout << new_partner_ids << std::endl;
+
+    new_partner_ids.write(R"({
+        "customer": true,
+        "name": "new abc"
+    })"_json);
+
+    Odoo::Model found_partner_ids = partner_ids.search(R"([
+            ["supplier", "=", true]
+        ])",
+        0, 10
+    );
+    std::cout << found_partner_ids << std::endl;
+
+    json read_partner_ids = partner_ids.search_read(R"([
+            ["supplier", "=", true]
+        ])",
+        {"name", "customer"},
+        0, 10, "id desc"
+    );
+    std::cout << read_partner_ids.dump(4) << std::endl;
 
     return EXIT_SUCCESS;
 }

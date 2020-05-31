@@ -82,3 +82,39 @@ git submodule update
    Here we use [raw-string-literal](https://www.geeksforgeeks.org/raw-string-literal-c/) from C++11 and [user-defined-literals](https://en.cppreference.com/w/cpp/language/user_literal) (""_json) from nlohmann's json library.
 
    model keeps a [std::shared_ptr](https://fr.cppreference.com/w/cpp/memory/shared_ptr) on OdooRPC object for convenience and safety.
+   
+   here are some examples:
+   
+   ```c++
+   // Create a record
+   Odoo::Model new_partner_ids = partner_ids.create(R"({
+       "name": "abc",
+       "supplier": true
+   })"_json);
+   std::cout << new_partner_ids << std::endl;
+   
+   // Update records
+   new_partner_ids.write(R"({
+       "customer": true,
+       "name": "new abc"
+   })"_json);
+   
+   // Create Model object matching the search
+   Odoo::Model found_partner_ids = partner_ids.search(R"([
+       	["supplier", "=", true]
+       ])",
+       0, 10
+   );
+   std::cout << found_partner_ids << std::endl;
+   
+   // Create a json object with requested values
+   json read_partner_ids = partner_ids.search_read(R"([
+       	["supplier", "=", true]
+       ])",
+       {"name", "customer"},
+       0, 10, "id desc"
+   );
+   std::cout << read_partner_ids.dump(4) << std::endl;
+   ```
+   
+   

@@ -18,8 +18,21 @@ namespace Odoo {
         public:
             Model(const SharedOdooRPC& rpc, const std::string& name, const Ids& ids = {});
             std::ostream& writeToStream(std::ostream& stream) const;
+
             Model browse(const Ids& ids) const;
             Model create(const json& values) const;
+            void write(const json& values) const;
+            Model search(const char* domain, size_t offset=0, size_t limit=-1, const std::string& order="") const;
+            Model search(const std::string& domain, size_t offset=0, size_t limit=-1, const std::string& order="") const;
+            Model search(const json& domain, size_t offset=0, size_t limit=-1, const std::string& order="") const;
+
+            json search_read(
+                const std::string& domain,
+                const std::vector<std::string>& fields,
+                size_t offset=0,
+                size_t limit=-1,
+                const std::string& order=""
+            ) const;
         private:
             const SharedOdooRPC _rpc;
             std::string _name;

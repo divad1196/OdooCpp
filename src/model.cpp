@@ -39,7 +39,79 @@ namespace Odoo {
         ));
         return Model(_rpc, _name, {response["result"].get<size_t>()});
     }
+
+
+    void Model::write(const json& values) const {
+        _rpc->raw_query(
+            _name,
+            "write",
+            {
+                json(_ids).dump(),
+                values.dump()
+            }
+        );
+    }
+
+    Model Model::search(
+        const char* domain,
+        size_t offset,
+        size_t limit,
+        const std::string& order
+    ) const {
+        return search(std::string(domain), offset, limit, order);
+    }
+    
+    Model Model::search(
+        const std::string& domain,
+        size_t offset,
+        size_t limit,
+        const std::string& order
+    ) const {
+        json response = json::parse(_rpc->raw_query(
+            _name,
+            "search",
+            {
+                domain,
+                std::to_string(offset),
+                limit == (size_t)-1 ? "null" : std::to_string(limit),
+                json(order).dump()
+            }
+        ));
+        return Model(_rpc, _name, response["result"].get<Ids>());
+    }
+
+    Model Model::search(
+        const json& domain,
+        size_t offset,
+        size_t limit,
+        const std::string& order
+    ) const {
+        return search(domain.dump(), offset, limit, order);
+    }
+
+    json Model::search_read(
+        const std::string& domain,
+        const std::vector<std::string>& fields,
+        size_t offset,
+        size_t limit,
+        const std::string& order
+    ) const {
+        json response = json::parse(_rpc->raw_query(
+            _name,
+            "search_read",
+            {
+                domain,
+                json(fields).dump(),
+                std::to_string(offset),
+                limit == (size_t)-1 ? "null" : std::to_string(limit),
+                json(order).dump()
+            }
+        ));
+        return response["result"];
+    }
 }
+
+
 
 std::ostream& operator<<(std::ostream& stream, const Odoo::Model& model) {
     return model.writeToStream(stream);
