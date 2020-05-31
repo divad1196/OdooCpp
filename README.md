@@ -19,6 +19,22 @@ Those library are included as git submodules, nothing needs to be done
 * [OdooRPC](https://github.com/divad1196/OdooRPC): minimal version of this library
 * [nlohmann/json](https://github.com/nlohmann/json/tree/master): json library that can be access through this library
 
+### Installation
+
+depending on your git version, you can try one of the following
+
+```bash
+git clone --recursive https://github.com/divad1196/OdooCpp.git
+```
+
+```bash
+git clone https://github.com/divad1196/OdooCpp.git
+git submodule init
+git submodule update
+```
+
+
+
 ### Use
 
 1. Create a client
@@ -31,7 +47,7 @@ Those library are included as git submodules, nothing needs to be done
    // Create Credentials
    Credentials creds("login", "password");
 
-   OdooRPC client (
+   Odoo::Client client (
        URL,
        DATABASE,
        creds
@@ -41,7 +57,7 @@ Those library are included as git submodules, nothing needs to be done
    could be written all-in-one
 
    ```c++
-   OdooRPC client (
+   Odoo::Client client (
        "my-url.com",
        "my-database",
        {
