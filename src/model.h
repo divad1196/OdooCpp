@@ -34,6 +34,8 @@ namespace Odoo {
                 size_t limit=-1,
                 const std::string& order=""
             ) const;
+
+            json read(const std::vector<std::string>& fields, bool load=false) const;
         private:
             SharedOdooRPC _rpc;
             std::string _name;

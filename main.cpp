@@ -51,6 +51,9 @@ int main(int argc, char *argv[]) {
     );
     std::cout << found_partner_ids << std::endl;
 
+    json data = found_partner_ids.read({"name", "supplier"}, true);
+    std::cout << data.dump(4) << std::endl;
+
     json read_partner_ids = partner_ids.search_read(R"([
             ["supplier", "=", true]
         ])",

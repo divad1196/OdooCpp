@@ -13,6 +13,7 @@ namespace Odoo {
     };
 
     void checkError(const json& response);
+    json parseResponse(const std::string& response);
 }
 
 #endif // ODOO_EXCEPTION_H

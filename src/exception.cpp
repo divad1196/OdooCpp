@@ -14,4 +14,17 @@ namespace Odoo {
             throw ServerError(response["error"]["data"]["message"].get<std::string>());
         }
     }
+
+    json parseResponse(const std::string& response) {
+        json parsed;
+        try {
+            parsed = json::parse(response);
+        } catch(...) {
+            throw ServerError(
+                "Server Response is not json serializable, Request may be invalid"
+            );
+        }
+        checkError(parsed);
+        return parsed["result"];
+    }
 }

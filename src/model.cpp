@@ -31,7 +31,7 @@ namespace Odoo {
     }
 
     Model Model::create(const json& values) const {
-        json response = json::parse(_rpc->raw_query(
+        json response = parseResponse(_rpc->raw_query(
             _name,
             "create",
             {
@@ -39,12 +39,12 @@ namespace Odoo {
             }
         ));
         checkError(response);
-        return Model(_rpc, _name, {response["result"].get<size_t>()});
+        return Model(_rpc, _name, {response.get<size_t>()});
     }
 
 
     void Model::write(const json& values) const {
-        json response = json::parse(_rpc->raw_query(
+        parseResponse(_rpc->raw_query(
             _name,
             "write",
             {
@@ -52,30 +52,27 @@ namespace Odoo {
                 values.dump()
             }
         ));
-        checkError(response);
     }
 
     void Model::unlink() const {
-        json response = json::parse(_rpc->raw_query(
+        parseResponse(_rpc->raw_query(
             _name,
             "unlink",
             {
                 json(_ids).dump(),
             }
         ));
-        checkError(response);
     }
 
     Model Model::exists() const {
-        json response = json::parse(_rpc->raw_query(
+        json response = parseResponse(_rpc->raw_query(
             _name,
             "exists",
             {
                 json(_ids).dump(),
             }
         ));
-        checkError(response);
-        return Model(_rpc, _name, response["result"].get<Ids>());
+        return Model(_rpc, _name, response.get<Ids>());
     }
 
     Model Model::search(
@@ -93,7 +90,7 @@ namespace Odoo {
         size_t limit,
         const std::string& order
     ) const {
-        json response = json::parse(_rpc->raw_query(
+        json response = parseResponse(_rpc->raw_query(
             _name,
             "search",
             {
@@ -103,8 +100,7 @@ namespace Odoo {
                 json(order).dump()
             }
         ));
-        checkError(response);
-        return Model(_rpc, _name, response["result"].get<Ids>());
+        return Model(_rpc, _name, response.get<Ids>());
     }
 
     Model Model::search(
@@ -123,7 +119,7 @@ namespace Odoo {
         size_t limit,
         const std::string& order
     ) const {
-        json response = json::parse(_rpc->raw_query(
+        return parseResponse(_rpc->raw_query(
             _name,
             "search_read",
             {
@@ -134,8 +130,18 @@ namespace Odoo {
                 json(order).dump()
             }
         ));
-        checkError(response);
-        return response["result"];
+    }
+
+    json Model::read(const std::vector<std::string>& fields, bool load) const {
+        return parseResponse(_rpc->raw_query(
+            _name,
+            "read",
+            {
+                json(_ids).dump(),
+                json(fields).dump(),
+                load ? R"("_classic_read")" : "null"
+            }
+        ));
     }
 }
 
