@@ -16,7 +16,17 @@ namespace Odoo {
     class Model {
         public:
             Model(const SharedOdooRPC& rpc, const std::string& name, const Ids& ids = {});
+
+            // Utilities
             std::ostream& writeToStream(std::ostream& stream) const;
+            void removeDuplicate();
+
+            // Operators
+
+            Model& operator+=(const Ids& ids);
+            Model& operator-=(Ids ids);
+
+            // Highleve methods
 
             Model browse(const Ids& ids) const;
             Model create(const json& values) const;
@@ -36,6 +46,7 @@ namespace Odoo {
             ) const;
 
             json read(const std::vector<std::string>& fields, bool load=false) const;
+            
         private:
             SharedOdooRPC _rpc;
             std::string _name;

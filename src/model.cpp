@@ -3,6 +3,8 @@
 #include <iostream>
 #include "exception.h"
 
+// Private utilities prototype
+void _removeDuplicate(Ids& ids);
 namespace Odoo {
 
     Model::Model(
@@ -11,6 +13,8 @@ namespace Odoo {
         const Ids& ids
     ): _rpc(rpc), _name(name), _ids(ids)
     {}
+
+    // Utilities
 
     std::ostream& Model::writeToStream(std::ostream& stream) const {
         stream << _name + '(';
@@ -23,6 +27,42 @@ namespace Odoo {
         stream << ')';
         return stream;
     }
+
+    void Model::removeDuplicate() {
+        _removeDuplicate(_ids);
+    }
+
+    // Operators
+
+    Model& Model::operator+=(const Ids& ids) {
+        _ids.reserve(_ids.size() + ids.size());
+        for(auto id: ids) {
+            _ids.push_back(id);
+        }
+        return *this;
+    }
+    Model& Model::operator-=(Ids ids) {
+        _removeDuplicate(ids);
+        size_t cursor = 0;
+        bool not_found = true;
+        for(size_t index = 0; index < _ids.size(); ++index) {
+            for(size_t check_index = 0; check_index < cursor and not_found; ++check_index) {
+                if(_ids[index] == ids[check_index])
+                    not_found = false;
+            }
+            if(not_found) {
+                _ids[cursor] = _ids[index];
+                ++cursor;
+            } else {
+                not_found = true;
+            }
+        }
+        ids.resize(cursor);
+        return *this;
+    }
+
+
+    // Highleve methods
 
     Model Model::browse(const Ids& ids) const {
         Model tmp = Model(*this);
@@ -146,6 +186,23 @@ namespace Odoo {
 }
 
 
+void _removeDuplicate(Ids& ids) {
+    size_t cursor = 0;
+    bool not_found = true;
+    for(size_t index = 0; index < ids.size(); ++index) {
+        for(size_t check_index = 0; check_index < cursor and not_found; ++check_index) {
+            if(ids[index] == ids[check_index])
+                not_found = false;
+        }
+        if(not_found) {
+            ids[cursor] = ids[index];
+            ++cursor;
+        } else {
+            not_found = true;
+        }
+    }
+    ids.resize(cursor);
+}
 
 std::ostream& operator<<(std::ostream& stream, const Odoo::Model& model) {
     return model.writeToStream(stream);
