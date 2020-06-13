@@ -16,18 +16,6 @@ namespace Odoo {
 
     // Utilities
 
-    std::ostream& Model::writeToStream(std::ostream& stream) const {
-        stream << _name + '(';
-        if(!_ids.empty())
-            stream << _ids[0];
-        for(size_t index = 1; index < _ids.size(); ++index) {
-            stream << ", ";
-            stream << _ids[index];
-        }
-        stream << ')';
-        return stream;
-    }
-
     void Model::removeDuplicate() {
         _removeDuplicate(_ids);
     }
@@ -41,12 +29,12 @@ namespace Odoo {
         }
         return *this;
     }
-    Model& Model::operator-=(Ids ids) {
-        _removeDuplicate(ids);
+
+    Model& Model::operator-=(const Ids& ids) {
         size_t cursor = 0;
         bool not_found = true;
         for(size_t index = 0; index < _ids.size(); ++index) {
-            for(size_t check_index = 0; check_index < cursor and not_found; ++check_index) {
+            for(size_t check_index = 0; check_index < ids.size() and not_found; ++check_index) {
                 if(_ids[index] == ids[check_index])
                     not_found = false;
             }
@@ -57,10 +45,85 @@ namespace Odoo {
                 not_found = true;
             }
         }
-        ids.resize(cursor);
+        _ids.resize(cursor);
         return *this;
     }
 
+    Model& Model::operator|=(const Ids& ids) {
+        *this += ids;
+        removeDuplicate();
+        return *this;
+    }
+
+    Model& Model::operator&=(const Ids& ids) {
+        size_t cursor = 0;
+        bool not_found = true;
+        for(size_t index = 0; index < _ids.size(); ++index) {
+            for(size_t check_index = 0; check_index < ids.size() and not_found; ++check_index) {
+                if(_ids[index] == ids[check_index])
+                    not_found = false;
+            }
+            if(!not_found) {
+                _ids[cursor] = _ids[index];
+                ++cursor;
+                not_found = true;
+            }
+        }
+        _ids.resize(cursor);
+        return *this;
+    }
+
+
+    Model& Model::operator+=(const Model& model) {
+        return *this += model._ids;
+    }
+    Model& Model::operator-=(const Model& model) {
+        return *this -= model._ids;
+    }
+    Model& Model::operator|=(const Model& model) {
+        return *this |= model._ids;
+    }
+    Model& Model::operator&=(const Model& model) {
+        return *this &= model._ids;
+    }
+
+
+    Model::operator std::string() const {
+        std::string res(_name + '(');
+        if(!_ids.empty())
+            res += std::to_string(_ids[0]);
+        for(size_t index = 1; index < _ids.size(); ++index) {
+            res += ", " + std::to_string(_ids[index]);
+        }
+        return res += ')';
+    }
+
+
+    Model operator+(Model model, const Ids& ids) {
+        return model += ids;
+    }
+    Model operator-(Model model, const Ids& ids) {
+        return model -= ids;
+    }
+    Model operator|(Model model, const Ids& ids) {
+        return model |= ids;
+    }
+    Model operator&(Model model, const Ids& ids) {
+        return model &= ids;
+    }
+
+    Model operator+(Model model, const Model& model2) {
+        return model += model2;
+    }
+    Model operator-(Model model, const Model& model2) {
+        return model -= model2;
+    }
+    Model operator|(Model model, const Model& model2) {
+        return model |= model2;
+    }
+    Model operator&(Model model, const Model& model2) {
+        return model &= model2;
+    }
 
     // Highleve methods
 
@@ -205,13 +268,11 @@ void _removeDuplicate(Ids& ids) {
 }
 
 std::ostream& operator<<(std::ostream& stream, const Odoo::Model& model) {
-    return model.writeToStream(stream);
+    return stream << std::string(model);
 }
 
 namespace std {
     string to_string(const Odoo::Model& model) {
-        stringstream stream;
-        model.writeToStream(stream);
-        return stream.str();
+        return std::string(model);
     }
 }

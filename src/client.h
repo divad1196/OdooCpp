@@ -15,7 +15,17 @@ namespace Odoo {
                 const Credentials& credentials
             );
 
+            /**
+             * @param name technical name of the model
+             * @param ids ids of the recordset 
+             * @return a recordset of the requested model
+             */
             Model model(const std::string& name, Ids ids = {}) const;
+
+            /**
+             * @param name technical name of the model
+             * @brief minimal alias for model methods.
+             */
             Model env(const std::string& name) const;
 
         private:

@@ -14,6 +14,11 @@
 * std=c++11
 * libcurl
 
+#### Tests
+
+Tests are done using [Catch2](https://github.com/catchorg/Catch2) C++ testing framework. It is BDD-style and header-only.
+This comes with the recursive clone and is not mandatory for the library to work.
+
 #### Included thirdparty
 Those library are included as git submodules, nothing needs to be done
 * [OdooRPC](https://github.com/divad1196/OdooRPC): minimal version of this library
@@ -33,6 +38,21 @@ git submodule init
 git submodule update
 ```
 
+### Compilation
+
+Compilation is done using [Cmake](https://cmake.org/).
+for manual compilation, create a folder, e.g. "builds", and from there run:
+
+```bash
+cmake .. # Generate build tree and Makefile
+make
+```
+
+Special flag can be used for profiling with [gprof](https://man7.org/linux/man-pages/man1/gprof.1.html)
+
+```bash
+cmake -DGRPOF=1 .. # use -pg flag
+```
 
 
 ### Use
@@ -126,4 +146,21 @@ git submodule update
    
    ```
    
-   Each of these methods checks if an error occured and **will throw an Exception** if the server return an error.
+   Each of these methods checks if an error occurred and **will throw an Exception** if the server return an error.
+
+Odoo does not hold a set of ids but a list of id, that means both + and | operator exists and are different.
+The same behaviour is kept here.
+
+```c++
+...
+Model m = client.env("res.partner").browse({1, 2, 3, 4});
+m += {3, 4, 5}; // 1, 2, 3, 4, 3, 4, 5
+m -= {4, 5}; // 1, 2, 3, 3
+m |= {4, 5, 5, 6} // 1, 2, 3, 4, 5, 6
+m &= {4, 5, 6, 7, 8, 9} // 4, 5, 6
+```
+
+NB:
+
+* operators +, -, | and & also exists
+* all operators that can take a list of ids can take a Model object.

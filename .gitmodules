@@ -6,3 +6,7 @@
 	path = external/OdooRPC
 	url = https://github.com/divad1196/OdooRPC.git
 	branch = master
+[submodule "tests/Catch2"]
+	path = tests/Catch2
+	url = https://github.com/catchorg/Catch2.git
+	branch = master
